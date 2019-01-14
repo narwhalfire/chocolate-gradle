@@ -1,0 +1,19 @@
+plugins {
+    id 'java-gradle-plugin'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group = 'st.bleeker.chocolate'
+archivesBaseName = 'gradle'
+version = '0.1.0'
+
+gradlePlugin {
+    plugins {
+        user {
+            id = 'chocolate-gradle-user'
+            implementationClass = 'st.bleeker.chocolate.gradle.dev.user.UserPlugin'
+        }
+    }
+}
