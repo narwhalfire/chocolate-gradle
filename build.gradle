@@ -21,11 +21,11 @@ gradlePlugin {
 repositories {
     mavenCentral()
     maven {
-        name = "fabric-loom"
-        url = 'https://maven.fabricmc.net/'
+        name = 'jitpack'
+        url = 'https://jitpack.io'
     }
 }
 
 dependencies {
-    implementation 'org.jetbrains:intellij-fernflower:1.0.0.2'
+    implementation 'com.github.fesh0r:fernflower:master'
 }
