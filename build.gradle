@@ -17,3 +17,15 @@ gradlePlugin {
         }
     }
 }
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "fabric-loom"
+        url = 'https://maven.fabricmc.net/'
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains:intellij-fernflower:1.0.0.2'
+}
