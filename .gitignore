@@ -1,5 +1,46 @@
-# Ignore Gradle project-specific cache directory
-.gradle
+### binaries
+.jar
+.exe
+.elf
+.out
+.bin
 
-# Ignore Gradle build output directory
-build
+### OS
+## Windows
+.Thumb
+.lnk
+[Dd]esktop.ini
+## MacOS
+.DS_store
+._*
+## Linux
+*~
+.nfs*
+
+### IDEs
+## Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.swp
+*~.nib
+local.preoperties
+.settings/
+.loadpath
+*.classpath
+*.project
+## VSCode
+.vscode/*
+## IntelliJ
+.idea/
+*.iml
+*.iws
+out/
+
+### Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+## others
+*.bak
