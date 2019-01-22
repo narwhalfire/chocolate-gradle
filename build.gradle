@@ -1,6 +1,7 @@
-plugins {
-    id 'java-gradle-plugin'
-}
+
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'maven-publish'
+
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -13,7 +14,11 @@ gradlePlugin {
     plugins {
         user {
             id = 'chocolate-gradle-user'
-            implementationClass = 'st.bleeker.chocolate.gradle.dev.user.UserPlugin'
+            implementationClass = 'st.bleeker.chocolate.gradle.plugin.user.UserPlugin'
+        }
+        dev {
+            id = 'chocolate-gradle-dev'
+            implementationClass = 'st.bleeker.chocolate.gradle.plugin.dev.DevPlugin'
         }
     }
 }
@@ -28,4 +33,16 @@ repositories {
 
 dependencies {
     implementation 'com.github.fesh0r:fernflower:master'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'commons-io:commons-io:2.4'
+
+}
+
+publishing {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url = "$buildDir/repo"
+        }
+    }
 }
