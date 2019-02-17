@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.Files;
 
 class VersionManifestProvider {
@@ -41,7 +42,7 @@ class VersionManifestProvider {
         return manifestJSON.latest.snapshot;
     }
 
-    String getVersionMetaURL(String versionID) {
+    URL getVersionMetaURL(String versionID) {
         return getMatchingVersion(versionID).url;
     }
 
@@ -76,7 +77,7 @@ class VersionManifestProvider {
     private class ManifestVersion {
         String id;
         String type;
-        String url;
+        URL url;
         String time;
         String releaseTime;
     }

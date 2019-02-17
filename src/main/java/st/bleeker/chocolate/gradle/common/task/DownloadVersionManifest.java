@@ -5,6 +5,7 @@ import org.gradle.api.Project;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import st.bleeker.chocolate.gradle.common.util.provider.MinecraftProvider;
+import st.bleeker.chocolate.gradle.plugin.user.MinecraftExtension;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -14,18 +15,22 @@ import java.net.URL;
 public class DownloadVersionManifest extends ChocolateTask {
 
     private Project project;
-    private File output = getMinecraftCache().toPath().resolve("version_manifest.json").toFile();
+    private MinecraftExtension minecraftExtension;
+
+    private File output;
 
     @Inject
-    public DownloadVersionManifest(Project project) {
+    public DownloadVersionManifest(Project project, MinecraftExtension minecraftExtension) {
         this.project = project;
+        this.minecraftExtension = minecraftExtension;
+        setOutput(getMinecraftCache().toPath().resolve("version_manifest.json").toFile());
     }
 
     @TaskAction
     public void downloadVersionManifest() {
 
         try {
-            URL url = new URL(MinecraftProvider.getManifestUrl());
+            URL url = MinecraftProvider.getManifestUrl();
             FileUtils.copyURLToFile(url, getOutput());
         } catch (IOException e) {
             //todo: log could not download version manifest
@@ -38,6 +43,10 @@ public class DownloadVersionManifest extends ChocolateTask {
     @OutputFile
     public File getOutput() {
         return output;
+    }
+
+    public void setOutput(File output) {
+        this.output = output;
     }
 
 }

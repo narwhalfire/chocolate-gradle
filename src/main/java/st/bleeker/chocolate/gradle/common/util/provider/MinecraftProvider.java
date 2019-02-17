@@ -1,6 +1,8 @@
 package st.bleeker.chocolate.gradle.common.util.provider;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MinecraftProvider {
 
@@ -8,8 +10,8 @@ public class MinecraftProvider {
     private static boolean checkVersionType = false;
 
 
-    public static String getManifestUrl() {
-        return MANIFEST_URL;
+    public static URL getManifestUrl() throws MalformedURLException {
+        return new URL(MANIFEST_URL);
     }
 
     /**
@@ -19,7 +21,7 @@ public class MinecraftProvider {
      * @param versionType type of the version (either "release" or "snapshot")
      * @return class representing the metadata of the version
      */
-    public static String getVersionMetaUrl(File manifest, String versionID, String versionType) {
+    public static URL getVersionMetaUrl(File manifest, String versionID, String versionType) {
 
         VersionManifestProvider provider = VersionManifestProvider.newVersionManifestProvider(manifest);
 
@@ -37,7 +39,13 @@ public class MinecraftProvider {
         return provider.getVersionMetaURL(versionID);
     }
 
+    public static URL getClientJarURL() {
+        return null;
+    }
 
+    public static URL getServerJarURL() {
+        return null;
+    }
 
 
 

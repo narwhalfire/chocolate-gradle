@@ -26,4 +26,12 @@ public abstract class ChocolateTask extends DefaultTask {
         return mcDir;
     }
 
+    public File getMinecraftVersionCache(String mcVersionID) {
+        File vDir = getMinecraftCache().toPath().resolve(mcVersionID).toFile();
+        if (!vDir.exists()) {
+            vDir.mkdir();
+        }
+        return vDir;
+    }
+
 }

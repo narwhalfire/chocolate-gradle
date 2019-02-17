@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.Files;
 
 class VersionMetaProvider {
@@ -34,15 +35,15 @@ class VersionMetaProvider {
         return versionJSON.assets;
     }
 
-    String getAssetsUrl() {
+    URL getAssetsUrl() {
         return versionJSON.assetIndex.url;
     }
 
-    String getServerJarUrl() {
+    URL getServerJarUrl() {
         return versionJSON.downloads.server.url;
     }
 
-    String getClientJarUrl() {
+    URL getClientJarUrl() {
         return versionJSON.downloads.client.url;
     }
 
@@ -79,7 +80,7 @@ class VersionMetaProvider {
         String sha1;
         long size;
         long totalSize;
-        String url;
+        URL url;
     }
 
     private class Downloads {
@@ -90,7 +91,7 @@ class VersionMetaProvider {
     private class Download {
         String sha1;
         long size;
-        String url;
+        URL url;
     }
 
     private class Library {
@@ -109,7 +110,7 @@ class VersionMetaProvider {
         String path;
         String sha1;
         long size;
-        String url;
+        URL url;
     }
 
     private class Classifiers {
@@ -152,7 +153,7 @@ class VersionMetaProvider {
         String id;
         String sha1;
         long size;
-        String url;
+        URL url;
     }
 
 
