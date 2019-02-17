@@ -39,6 +39,7 @@ local.preoperties
 out/
 
 ### Gradle
+build/
 .gradle/
 !gradle/wrapper/gradle-wrapper.jar
 
