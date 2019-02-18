@@ -8,6 +8,8 @@ import st.bleeker.chocolate.gradle.common.util.provider.MinecraftProvider;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserPlugin implements Plugin<Project> {
 
@@ -15,11 +17,11 @@ public class UserPlugin implements Plugin<Project> {
     private MinecraftExtension minecraftExtension;
     private MinecraftProvider minecraftProvider;
 
-    private TaskProvider<DownloadVersionManifest> dlVersionManifest;
-    private TaskProvider<DownloadVersionMeta> dlVersionMeta;
-    private TaskProvider<DownloadMinecraftJars> dlmcJars;
-    private TaskProvider<DownloadMinecraftAssets> dlmcAssets;
-    private TaskProvider<DownloadLibraryJars> dlLibJars;
+    private TaskProvider<DownloadVersionManifest>       dlVersionManifest;
+    private TaskProvider<DownloadVersionMeta>           dlVersionMeta;
+    private TaskProvider<DownloadMinecraftJars>         dlmcJars;
+    private TaskProvider<DownloadMinecraftAssets>       dlmcAssets;
+    private TaskProvider<DownloadLibraryJars>           dlLibJars;
 
     @Override
     public void apply(Project target) {
@@ -42,18 +44,18 @@ public class UserPlugin implements Plugin<Project> {
         dlVersionManifest = this.project.getTasks().register("downloadVersionManifest",
                                                              DownloadVersionManifest.class,
                                                              this.project, minecraftExtension);
-        dlVersionMeta = this.project.getTasks().register("downloadVersionMeta",
-                                                         DownloadVersionMeta.class,
-                                                         this.project, minecraftExtension);
-        dlmcJars = this.project.getTasks().register("downloadMinecraftJars",
-                                                    DownloadMinecraftJars.class,
-                                                    this.project, minecraftExtension);
-        dlmcAssets = this.project.getTasks().register("downloadMinecraftAssets",
-                                                      DownloadMinecraftAssets.class,
-                                                      this.project, minecraftExtension);
-        dlLibJars = this.project.getTasks().register("downloadLibraryJars",
-                                                     DownloadLibraryJars.class,
-                                                     this.project, minecraftExtension);
+        dlVersionMeta =     this.project.getTasks().register("downloadVersionMeta",
+                                                             DownloadVersionMeta.class,
+                                                             this.project, minecraftExtension);
+        dlmcJars =          this.project.getTasks().register("downloadMinecraftJars",
+                                                             DownloadMinecraftJars.class,
+                                                             this.project, minecraftExtension);
+        dlmcAssets =        this.project.getTasks().register("downloadMinecraftAssets",
+                                                             DownloadMinecraftAssets.class,
+                                                             this.project, minecraftExtension);
+        dlLibJars =         this.project.getTasks().register("downloadLibraryJars",
+                                                             DownloadLibraryJars.class,
+                                                             this.project, minecraftExtension);
     }
 
     private void configureTasks() {
@@ -72,6 +74,7 @@ public class UserPlugin implements Plugin<Project> {
             task.setVersionID(dlVersionMeta.get().getVersionID());
             task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
             File cache = task.getMinecraftVersionCache(task.getVersionID());
+            task.setOutput(new HashMap<>());
             task.addOutput("client", new File(cache, "client.jar"));
             task.addOutput("server", new File(cache, "server.jar"));
         });
@@ -79,7 +82,10 @@ public class UserPlugin implements Plugin<Project> {
 
         });
         dlLibJars.configure(task -> {
-
+            task.dependsOn(dlVersionMeta.get());
+            task.setVersionID(dlVersionMeta.get().getVersionID());
+            task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
+            task.setLibraryDir(task.getMinecraftLibraryCache());
         });
     }
 }

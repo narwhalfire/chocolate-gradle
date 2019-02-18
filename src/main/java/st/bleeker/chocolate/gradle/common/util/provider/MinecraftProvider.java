@@ -1,6 +1,7 @@
 package st.bleeker.chocolate.gradle.common.util.provider;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -47,6 +48,10 @@ public class MinecraftProvider {
 
     public URL getAssetsUrl(File version, String versionID) {
         return VersionMetaProvider.newVersionMetaProvider(version).getAssetsUrl();
+    }
+
+    public void saveLibrariesToDir(File dir, File version, String versionID) throws IOException {
+        VersionMetaProvider.newVersionMetaProvider(version).saveLibrariesToDir(dir);
     }
 
 }

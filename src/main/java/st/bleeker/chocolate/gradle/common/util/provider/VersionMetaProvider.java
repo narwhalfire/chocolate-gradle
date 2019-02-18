@@ -1,7 +1,7 @@
 package st.bleeker.chocolate.gradle.common.util.provider;
 
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +52,30 @@ class VersionMetaProvider {
         return versionJSON.downloads.get(side).sha1;
     }
 
+    void saveLibrariesToDir(File dir) throws IOException {
 
+        for (Library library : versionJSON.libraries) {
+            LibDownload libDownload = library.downloads;
+            if (libDownload.artifact != null) {
+                FileUtils.copyURLToFile(libDownload.artifact.url, new File(dir, libDownload.artifact.path));
+            }
+            if (libDownload.classifiers != null) {
+                if (libDownload.classifiers.containsKey("javadoc")) {
+                    FileUtils.copyURLToFile(libDownload.classifiers.get("javadoc").url,
+                                            new File(dir, libDownload.classifiers.get("javadoc").path));
+                }
+                if (libDownload.classifiers.containsKey("sources")) {
+                    FileUtils.copyURLToFile(libDownload.classifiers.get("sources").url,
+                                            new File(dir, libDownload.classifiers.get("sources").path));
+                }
+                if (libDownload.classifiers.containsKey("natives-windows")) {
+                    FileUtils.copyURLToFile(libDownload.classifiers.get("natives-windows").url,
+                                            new File(dir, libDownload.classifiers.get("natives-windows").path));
+                }
+            }
+        }
+
+    }
 
 
 
@@ -93,8 +116,8 @@ class VersionMetaProvider {
 
     private class LibDownload {
         Artifact artifact;
-        Classifiers classifiers;
-        Natives natives;
+        Map<String, Artifact> classifiers;
+        Map<String, String> natives;
         Rule[] rules;
     }
 
@@ -103,23 +126,6 @@ class VersionMetaProvider {
         String sha1;
         long size;
         URL url;
-    }
-
-    private class Classifiers {
-        Artifact javadoc;
-        Artifact sources;
-        @SerializedName("natives-linux")
-        Artifact nativesLinux;
-        @SerializedName("natives-macos")
-        Artifact nativesMacOS;
-        @SerializedName("natives-windows")
-        Artifact nativesWindows;
-    }
-
-    private class Natives {
-        String linux;
-        String osx;
-        String windows;
     }
 
     private class Rule {
