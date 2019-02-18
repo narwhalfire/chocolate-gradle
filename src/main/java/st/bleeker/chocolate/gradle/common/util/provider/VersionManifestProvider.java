@@ -29,7 +29,7 @@ class VersionManifestProvider {
         } catch (IOException e) {
             //todo: log could not read version manifest
             System.out.println("could not read version manifest");
-            throw new RuntimeException("could not read version manifest");
+            throw new RuntimeException("could not read version manifest", e);
         }
 
     }

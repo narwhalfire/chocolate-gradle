@@ -1,59 +1,76 @@
 package st.bleeker.chocolate.gradle.common.task;
 
+import org.apache.commons.io.FileUtils;
 import org.gradle.api.Project;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFiles;
 import org.gradle.api.tasks.TaskAction;
+import st.bleeker.chocolate.gradle.common.util.provider.MinecraftProvider;
 import st.bleeker.chocolate.gradle.plugin.user.MinecraftExtension;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.nio.file.Path;
-import java.util.Arrays;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
+import java.util.Map;
 
 public class DownloadMinecraftJars extends ChocolateTask {
 
     private Project project;
     private MinecraftExtension minecraftExtension;
 
-    private File input;
-    private Collection<File> output;
+    private String versionID;
+    private File versionMeta;
+    private Map<String, File> jarMap;
 
     @Inject
     public DownloadMinecraftJars(Project project, MinecraftExtension minecraftExtension) {
         this.project = project;
         this.minecraftExtension = minecraftExtension;
-        setInput(getMinecraftVersionCache(minecraftExtension.mcVersionID)
-                         .toPath().resolve(minecraftExtension.mcVersionID + ".json").toFile());
-        Path path = getMinecraftVersionCache(minecraftExtension.mcVersionID).toPath();
-        setOutput(Arrays.asList(path.resolve("client.jar").toFile(),
-                                path.resolve("server.jar").toFile()));
     }
 
     @TaskAction
-    public void downloadMinecraftJars() {
+    public void downloadMinecraftJars() throws IOException {
 
+        MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
 
+        for (Map.Entry<String, File> entry : jarMap.entrySet()) {
+            URL url = provider.getJarUrl(getVersionMeta(), getVersionID(), entry.getKey());
+            FileUtils.copyURLToFile(url, entry.getValue());
+        }
 
     }
 
+    @Input
+    public String getVersionID() {
+        return versionID;
+    }
+    public void setVersionID(String versionID) {
+        this.versionID = versionID;
+    }
+
     @InputFile
-    public File getInput() {
-        return input;
+    public File getVersionMeta() {
+        return versionMeta;
+    }
+    public void setVersionMeta(File versionMeta) {
+        this.versionMeta = versionMeta;
     }
 
     @OutputFiles
     public Collection<File> getOutput() {
-        return output;
+        return jarMap.values();
     }
-
-    public void setInput(File input) {
-        this.input = input;
+    public void setOutput(Map<String, File> jarMap) {
+        this.jarMap = jarMap;
     }
-
-    public void setOutput(Collection<File> output) {
-        this.output = output;
+    public void addOutput(String k, File v) {
+        this.jarMap.put(k, v);
+    }
+    public void removeOutput(String k) {
+        this.jarMap.remove(k);
     }
 
 }

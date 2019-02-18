@@ -17,36 +17,29 @@ public class DownloadVersionManifest extends ChocolateTask {
     private Project project;
     private MinecraftExtension minecraftExtension;
 
-    private File output;
+    private File manifest;
 
     @Inject
     public DownloadVersionManifest(Project project, MinecraftExtension minecraftExtension) {
         this.project = project;
         this.minecraftExtension = minecraftExtension;
-        setOutput(getMinecraftCache().toPath().resolve("version_manifest.json").toFile());
     }
 
     @TaskAction
-    public void downloadVersionManifest() {
+    public void downloadVersionManifest() throws IOException {
 
-        try {
-            URL url = MinecraftProvider.getManifestUrl();
-            FileUtils.copyURLToFile(url, getOutput());
-        } catch (IOException e) {
-            //todo: log could not download version manifest
-            System.out.println("could not download version manifest");
-            throw new RuntimeException("could not download version manifest");
-        }
+        MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
+        URL url = provider.getManifestUrl();
+        FileUtils.copyURLToFile(url, getManifest());
 
     }
 
     @OutputFile
-    public File getOutput() {
-        return output;
+    public File getManifest() {
+        return manifest;
     }
-
-    public void setOutput(File output) {
-        this.output = output;
+    public void setManifest(File manifest) {
+        this.manifest = manifest;
     }
 
 }

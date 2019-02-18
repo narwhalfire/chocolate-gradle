@@ -9,19 +9,17 @@ public class MinecraftProvider {
     private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
     private static boolean checkVersionType = false;
 
-
-    public static URL getManifestUrl() throws MalformedURLException {
-        return new URL(MANIFEST_URL);
+    public URL getManifestUrl() {
+        try {
+            return new URL(MANIFEST_URL);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            //todo: log and stuff
+            throw new RuntimeException(e);
+        }
     }
 
-    /**
-     * Grabs the version JSON from the version manifest JSON. If the version is specified as latest, then the
-     * latest release or snapshot will be grabbed per the specified version type.
-     * @param versionID id of the version (e.g. 1.13.1-pre1, 1.12.2, 1.7.10, 19w02a, 18w44a)
-     * @param versionType type of the version (either "release" or "snapshot")
-     * @return class representing the metadata of the version
-     */
-    public static URL getVersionMetaUrl(File manifest, String versionID, String versionType) {
+    public URL getVersionMetaUrl(File manifest, String versionID, String versionType) {
 
         VersionManifestProvider provider = VersionManifestProvider.newVersionManifestProvider(manifest);
 
@@ -39,17 +37,16 @@ public class MinecraftProvider {
         return provider.getVersionMetaURL(versionID);
     }
 
-    public static URL getClientJarURL() {
-        return null;
+    public URL getVersionMetaUrl(File manifest, String versionID) {
+        return VersionManifestProvider.newVersionManifestProvider(manifest).getVersionMetaURL(versionID);
     }
 
-    public static URL getServerJarURL() {
-        return null;
+    public URL getJarUrl(File version, String versionID, String side) {
+        return VersionMetaProvider.newVersionMetaProvider(version).getJarUrl(side);
     }
 
-
-
-
-
+    public URL getAssetsUrl(File version, String versionID) {
+        return VersionMetaProvider.newVersionMetaProvider(version).getAssetsUrl();
+    }
 
 }

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Map;
 
 class VersionMetaProvider {
 
@@ -26,9 +27,13 @@ class VersionMetaProvider {
         } catch (IOException e) {
             //todo: log could not read version json
             System.out.println("could not read version json");
-            throw new RuntimeException("could not read version json");
+            throw new RuntimeException("could not read version json", e);
         }
 
+    }
+
+    String getID() {
+        return versionJSON.id;
     }
 
     String getAssetsVersion() {
@@ -39,20 +44,12 @@ class VersionMetaProvider {
         return versionJSON.assetIndex.url;
     }
 
-    URL getServerJarUrl() {
-        return versionJSON.downloads.server.url;
+    URL getJarUrl(String side) {
+        return versionJSON.downloads.get(side).url;
     }
 
-    URL getClientJarUrl() {
-        return versionJSON.downloads.client.url;
-    }
-
-    String getServerJarSha1() {
-        return versionJSON.downloads.server.sha1;
-    }
-
-    String getClientJarSha1() {
-        return versionJSON.downloads.client.sha1;
+    String getJarSha1(String side) {
+        return versionJSON.downloads.get(side).sha1;
     }
 
 
@@ -64,7 +61,7 @@ class VersionMetaProvider {
     private class VersionJSON {
         AssetIndex assetIndex;
         String assets;
-        Downloads downloads;
+        Map<String, Download> downloads;
         String id;
         Library[] libraries;
         Logging logging;
@@ -81,11 +78,6 @@ class VersionMetaProvider {
         long size;
         long totalSize;
         URL url;
-    }
-
-    private class Downloads {
-        Download client;
-        Download server;
     }
 
     private class Download {
