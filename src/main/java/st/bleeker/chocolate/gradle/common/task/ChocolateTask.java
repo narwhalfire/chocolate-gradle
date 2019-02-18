@@ -11,7 +11,7 @@ public abstract class ChocolateTask extends DefaultTask {
     }
 
     public File getChocolateCache() {
-        File chocolateDir = getProject().getBuildDir().toPath().resolve("chocolate").toFile();
+        File chocolateDir = new File(getProject().getBuildDir(), "chocolate");
         if (!chocolateDir.exists()) {
             chocolateDir.mkdir();
         }
@@ -19,7 +19,7 @@ public abstract class ChocolateTask extends DefaultTask {
     }
 
     public File getMinecraftCache() {
-        File mcDir = getChocolateCache().toPath().resolve("minecraft").toFile();
+        File mcDir = new File(getChocolateCache(), "minecraft");
         if (!mcDir.exists()) {
             mcDir.mkdir();
         }
@@ -27,11 +27,19 @@ public abstract class ChocolateTask extends DefaultTask {
     }
 
     public File getMinecraftVersionCache(String mcVersionID) {
-        File vDir = getMinecraftCache().toPath().resolve(mcVersionID).toFile();
+        File vDir = new File(getMinecraftCache(), mcVersionID);
         if (!vDir.exists()) {
             vDir.mkdir();
         }
         return vDir;
+    }
+
+    public File getMinecraftLibraryCache() {
+        File libDir = new File(getMinecraftCache(), "libraries");
+        if (!libDir.exists()) {
+            libDir.mkdir();
+        }
+        return libDir;
     }
 
 }
