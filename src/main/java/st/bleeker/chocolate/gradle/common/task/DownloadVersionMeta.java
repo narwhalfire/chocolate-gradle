@@ -20,7 +20,6 @@ public class DownloadVersionMeta extends ChocolateTask {
     private Project project;
     private MinecraftExtension minecraftExtension;
 
-    private Property<String> assetId = project.getObjects().property(String.class);
     private String versionID;
     private File manifest;
     private File versionMeta;
