@@ -2,6 +2,7 @@ package st.bleeker.chocolate.gradle.plugin.user;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.TaskProvider;
 import st.bleeker.chocolate.gradle.common.task.*;
 import st.bleeker.chocolate.gradle.common.util.provider.MinecraftProvider;
@@ -63,39 +64,38 @@ public class UserPlugin implements Plugin<Project> {
 
     private void configureTasks() {
         dlVersionManifest.configure(task -> {
-            task.setManifest(new File(task.getMinecraftCache(), "version_manifest.json"));
+
         });
         dlVersionMeta.configure(task -> {
             task.dependsOn(dlVersionManifest.get());
-            task.setVersionID(minecraftExtension.mcVersionID);
             task.setManifest(dlVersionManifest.get().getManifest());
-            task.setVersionMeta(new File(task.getMinecraftVersionCache(task.getVersionID()),
-                                         task.getVersionID() + ".json"));
+            task.setVersionID(dlVersionManifest.get().getVersionID());
+//            task.setVersionMeta(new File(task.getMinecraftVersionCache(task.getVersionID().get()), task.getVersionID().get() + ".json"));
         });
-        dlAssetMeta.configure(task -> {
-            task.dependsOn(dlVersionMeta.get());
-            task.setVersionID(dlVersionMeta.get().getVersionID());
-            task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
-            task.setAssetMeta(new File(task.getMinecraftAssetCahce(),
-                                       task.getAssetID() + ".json"));
-        });
-        dlmcJars.configure(task -> {
-            task.dependsOn(dlVersionMeta.get());
-            task.setVersionID(dlVersionMeta.get().getVersionID());
-            task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
-            File cache = task.getMinecraftVersionCache(task.getVersionID());
-            task.setOutput(new HashMap<>());
-            task.addOutput("client", new File(cache, "client.jar"));
-            task.addOutput("server", new File(cache, "server.jar"));
-        });
-        dlmcAssets.configure(task -> {
-
-        });
-        dlLibJars.configure(task -> {
-            task.dependsOn(dlVersionMeta.get());
-            task.setVersionID(dlVersionMeta.get().getVersionID());
-            task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
-            task.setLibraryDir(task.getMinecraftLibraryCache());
-        });
+//        dlAssetMeta.configure(task -> {
+//            task.dependsOn(dlVersionMeta.get());
+//            task.setVersionID(dlVersionMeta.get().getVersionID());
+//            task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
+//            task.setAssetMeta(new File(task.getMinecraftAssetCahce(),
+//                                       task.getAssetID() + ".json"));
+//        });
+//        dlmcJars.configure(task -> {
+//            task.dependsOn(dlVersionMeta.get());
+//            task.setVersionID(dlVersionMeta.get().getVersionID());
+//            task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
+//            File cache = task.getMinecraftVersionCache(task.getVersionID());
+//            task.setOutput(new HashMap<>());
+//            task.addOutput("client", new File(cache, "client.jar"));
+//            task.addOutput("server", new File(cache, "server.jar"));
+//        });
+//        dlmcAssets.configure(task -> {
+//
+//        });
+//        dlLibJars.configure(task -> {
+//            task.dependsOn(dlVersionMeta.get());
+//            task.setVersionID(dlVersionMeta.get().getVersionID());
+//            task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
+//            task.setLibraryDir(task.getMinecraftLibraryCache());
+//        });
     }
 }
