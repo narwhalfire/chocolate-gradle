@@ -2,7 +2,6 @@ package st.bleeker.chocolate.gradle.common.task;
 
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.Project;
-import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
@@ -15,28 +14,29 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-public class DownloadVersionMeta extends ChocolateTask {
+public class DownloadAssetMeta extends ChocolateTask {
 
     private Project project;
     private MinecraftExtension minecraftExtension;
 
-    private Property<String> assetId = project.getObjects().property(String.class);
     private String versionID;
-    private File manifest;
+    private String assetID;
     private File versionMeta;
+    private File assetMeta;
 
     @Inject
-    public DownloadVersionMeta(Project project, MinecraftExtension minecraftExtension) {
+    public DownloadAssetMeta(Project project, MinecraftExtension minecraftExtension) {
         this.project = project;
         this.minecraftExtension = minecraftExtension;
     }
 
     @TaskAction
-    public void downloadVersionMeta() throws IOException {
+    public void downloadAssetMeta() throws IOException {
 
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
-        URL url = provider.getVersionMetaUrl(getManifest(), getVersionID());
-        FileUtils.copyURLToFile(url, getVersionMeta());
+        setAssetID(provider.getAssetID(getVersionMeta(), getVersionID()));
+        URL url = provider.getAssetsUrl(getVersionMeta(), getAssetID());
+        FileUtils.copyURLToFile(url, getAssetMeta());
 
     }
 
@@ -48,20 +48,27 @@ public class DownloadVersionMeta extends ChocolateTask {
         this.versionID = versionID;
     }
 
-    @InputFile
-    public File getManifest(){
-        return manifest;
+    public String getAssetID() {
+        return assetID;
     }
-    public void setManifest(File manifest) {
-        this.manifest = manifest;
+    public void setAssetID(String assetID) {
+        this.assetID = assetID;
     }
 
-    @OutputFile
+    @InputFile
     public File getVersionMeta() {
         return versionMeta;
     }
     public void setVersionMeta(File versionMeta) {
         this.versionMeta = versionMeta;
+    }
+
+    @OutputFile
+    public File getAssetMeta() {
+        return assetMeta;
+    }
+    public void setAssetMeta(File assetMeta) {
+        this.assetMeta = assetMeta;
     }
 
 }

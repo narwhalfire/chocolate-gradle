@@ -36,6 +36,10 @@ class VersionMetaProvider {
         return versionJSON.id;
     }
 
+    String getAssetID() {
+        return versionJSON.assetIndex.id;
+    }
+
     String getAssetsVersion() {
         return versionJSON.assets;
     }

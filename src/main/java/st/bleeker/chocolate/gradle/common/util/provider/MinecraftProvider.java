@@ -46,12 +46,20 @@ public class MinecraftProvider {
         return VersionMetaProvider.newVersionMetaProvider(version).getJarUrl(side);
     }
 
-    public URL getAssetsUrl(File version, String versionID) {
+    public URL getAssetsUrl(File version, String assetID) {
         return VersionMetaProvider.newVersionMetaProvider(version).getAssetsUrl();
+    }
+
+    public String getAssetID(File version, String versionID) {
+        return VersionMetaProvider.newVersionMetaProvider(version).getAssetID();
     }
 
     public void saveLibrariesToDir(File dir, File version, String versionID) throws IOException {
         VersionMetaProvider.newVersionMetaProvider(version).saveLibrariesToDir(dir);
+    }
+
+    public void saveAssetsToDir(File dir, File version, String assetID) throws IOException {
+
     }
 
 }

@@ -9,7 +9,6 @@ import st.bleeker.chocolate.gradle.common.util.provider.MinecraftProvider;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 public class UserPlugin implements Plugin<Project> {
 
@@ -19,6 +18,7 @@ public class UserPlugin implements Plugin<Project> {
 
     private TaskProvider<DownloadVersionManifest>       dlVersionManifest;
     private TaskProvider<DownloadVersionMeta>           dlVersionMeta;
+    private TaskProvider<DownloadAssetMeta>             dlAssetMeta;
     private TaskProvider<DownloadMinecraftJars>         dlmcJars;
     private TaskProvider<DownloadMinecraftAssets>       dlmcAssets;
     private TaskProvider<DownloadLibraryJars>           dlLibJars;
@@ -47,6 +47,9 @@ public class UserPlugin implements Plugin<Project> {
         dlVersionMeta =     this.project.getTasks().register("downloadVersionMeta",
                                                              DownloadVersionMeta.class,
                                                              this.project, minecraftExtension);
+        dlAssetMeta =       this.project.getTasks().register("downloadAssetMeta",
+                                                             DownloadAssetMeta.class,
+                                                             this.project, minecraftExtension);
         dlmcJars =          this.project.getTasks().register("downloadMinecraftJars",
                                                              DownloadMinecraftJars.class,
                                                              this.project, minecraftExtension);
@@ -68,6 +71,13 @@ public class UserPlugin implements Plugin<Project> {
             task.setManifest(dlVersionManifest.get().getManifest());
             task.setVersionMeta(new File(task.getMinecraftVersionCache(task.getVersionID()),
                                          task.getVersionID() + ".json"));
+        });
+        dlAssetMeta.configure(task -> {
+            task.dependsOn(dlVersionMeta.get());
+            task.setVersionID(dlVersionMeta.get().getVersionID());
+            task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
+            task.setAssetMeta(new File(task.getMinecraftAssetCahce(),
+                                       task.getAssetID() + ".json"));
         });
         dlmcJars.configure(task -> {
             task.dependsOn(dlVersionMeta.get());
