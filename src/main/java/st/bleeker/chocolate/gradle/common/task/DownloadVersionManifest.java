@@ -17,16 +17,12 @@ import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
 
 public class DownloadVersionManifest extends ChocolateTask {
 
-    private Project project;
-    private MinecraftExtension minecraftExtension;
-
     private String versionID;
     private File manifest;
 
     @Inject
     public DownloadVersionManifest(Project project, MinecraftExtension minecraftExtension) {
-        this.project = project;
-        this.minecraftExtension = minecraftExtension;
+        super(project, minecraftExtension);
     }
 
     @TaskAction

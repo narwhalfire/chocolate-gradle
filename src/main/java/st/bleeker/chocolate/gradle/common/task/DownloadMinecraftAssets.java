@@ -11,17 +11,13 @@ import java.io.IOException;
 
 public class DownloadMinecraftAssets extends ChocolateTask {
 
-    private Project project;
-    private MinecraftExtension minecraftExtension;
-
     private String assetID;
     private File assetMeta;
     private File assetDir;
 
     @Inject
     public DownloadMinecraftAssets(Project project, MinecraftExtension minecraftExtension){
-        this.project = project;
-        this.minecraftExtension = minecraftExtension;
+        super(project, minecraftExtension);
     }
 
     @TaskAction

@@ -12,18 +12,11 @@ import st.bleeker.chocolate.gradle.plugin.user.MinecraftExtension;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
 
 import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
 
 public class DownloadVersionMeta extends ChocolateTask {
-
-    private Project project;
-    private MinecraftExtension minecraftExtension;
-
 
     private String assetID;
     private String versionID;
@@ -32,8 +25,7 @@ public class DownloadVersionMeta extends ChocolateTask {
 
     @Inject
     public DownloadVersionMeta(Project project, MinecraftExtension minecraftExtension) {
-        this.project = project;
-        this.minecraftExtension = minecraftExtension;
+        super(project, minecraftExtension);
     }
 
     @TaskAction
@@ -42,9 +34,9 @@ public class DownloadVersionMeta extends ChocolateTask {
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
         URL url = provider.getVersionMetaUrl(getManifest(), getVersionID());
 
-        InputStream inputStream = url.openStream();
-        OutputStream outputStream = Files.newOutputStream(getVersionMeta().toPath());
-
+//        InputStream inputStream = url.openStream();
+//        OutputStream outputStream = Files.newOutputStream(getVersionMeta().toPath());
+//
 //        int b;
 //        while ((b = inputStream.read()) != -1) {
 //            outputStream.write(b);

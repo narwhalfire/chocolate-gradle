@@ -14,17 +14,13 @@ import java.io.IOException;
 
 public class DownloadLibraryJars extends ChocolateTask {
 
-    private Project project;
-    private MinecraftExtension minecraftExtension;
-
     private String versionID;
     private File versionMeta;
     private File libraryDir;
 
     @Inject
     public DownloadLibraryJars(Project project, MinecraftExtension minecraftExtension) {
-        this.project = project;
-        this.minecraftExtension = minecraftExtension;
+        super(project, minecraftExtension);
     }
 
     @TaskAction

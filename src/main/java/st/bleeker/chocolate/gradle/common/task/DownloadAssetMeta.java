@@ -18,9 +18,6 @@ import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
 
 public class DownloadAssetMeta extends ChocolateTask {
 
-    private Project project;
-    private MinecraftExtension minecraftExtension;
-
     private String assetID;
     private String versionID;
     private File versionMeta;
@@ -28,8 +25,7 @@ public class DownloadAssetMeta extends ChocolateTask {
 
     @Inject
     public DownloadAssetMeta(Project project, MinecraftExtension minecraftExtension) {
-        this.project = project;
-        this.minecraftExtension = minecraftExtension;
+        super(project, minecraftExtension);
     }
 
     @TaskAction

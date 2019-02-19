@@ -20,17 +20,13 @@ import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
 
 public class DownloadMinecraftJars extends ChocolateTask {
 
-    private Project project;
-    private MinecraftExtension minecraftExtension;
-
     private String versionID;
     private File versionMeta;
     private Map<String, File> jarMap;
 
     @Inject
     public DownloadMinecraftJars(Project project, MinecraftExtension minecraftExtension) {
-        this.project = project;
-        this.minecraftExtension = minecraftExtension;
+        super(project, minecraftExtension);
     }
 
     @TaskAction
