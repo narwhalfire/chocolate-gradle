@@ -8,7 +8,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
 
@@ -83,6 +88,16 @@ class VersionMetaProvider {
 
     }
 
+    List<Path> listLibraries() {
+        List<Path> list = new LinkedList<>();
+        for (Library library : versionJSON.libraries) {
+            LibDownload libDownload = library.downloads;
+            if (libDownload.artifact != null) {
+                list.add(Paths.get(libDownload.artifact.path));
+            }
+        }
+        return list;
+    }
 
 
     /* For the version json */

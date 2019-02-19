@@ -25,7 +25,8 @@ public class DownloadAssetMeta extends ChocolateTask {
 
     @Inject
     public DownloadAssetMeta(Project project, MinecraftExtension minecraftExtension) {
-        super(project, minecraftExtension);
+        this.project = project;
+        this.minecraftExtension = minecraftExtension;
     }
 
     @TaskAction

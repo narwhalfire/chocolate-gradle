@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.util.List;
 
 public class MinecraftProvider {
 
@@ -62,6 +64,10 @@ public class MinecraftProvider {
 
     public void saveAssetsToDir(File dir, File version, String assetID) throws IOException {
         AssetProvider.newAssetProvider(version).saveAssetsToDir(dir);
+    }
+
+    public List<Path> listLibraries(File version, String versionID) {
+        return VersionMetaProvider.newVersionMetaProvider(version).listLibraries();
     }
 
 }

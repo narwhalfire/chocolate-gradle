@@ -23,6 +23,7 @@ public class UserPlugin implements Plugin<Project> {
     private TaskProvider<DownloadMinecraftJars>         dlmcJars;
     private TaskProvider<DownloadMinecraftAssets>       dlmcAssets;
     private TaskProvider<DownloadLibraryJars>           dlLibJars;
+    private TaskProvider<DecompileJars>                 decompJars;
 
     @Override
     public void apply(Project target) {
@@ -59,6 +60,9 @@ public class UserPlugin implements Plugin<Project> {
                                                              this.project, minecraftExtension);
         dlLibJars =         this.project.getTasks().register("downloadLibraryJars",
                                                              DownloadLibraryJars.class,
+                                                             this.project, minecraftExtension);
+        decompJars =        this.project.getTasks().register("decompJars",
+                                                             DecompileJars.class,
                                                              this.project, minecraftExtension);
     }
 
@@ -111,6 +115,13 @@ public class UserPlugin implements Plugin<Project> {
         });
         dlLibJars.configure(task -> {
             task.dependsOn(dlVersionMeta.get());
+            task.setVersionID(dlVersionMeta.get().getVersionID());
+            task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
+            task.setLibraryDir(task.getMinecraftLibraryCache());
+        });
+        decompJars.configure(task -> {
+//            task.dependsOn(dlmcJars);
+//            task.dependsOn(dlLibJars);
             task.setVersionID(dlVersionMeta.get().getVersionID());
             task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
             task.setLibraryDir(task.getMinecraftLibraryCache());
