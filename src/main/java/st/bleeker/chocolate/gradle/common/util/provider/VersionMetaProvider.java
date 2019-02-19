@@ -10,6 +10,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Map;
 
+import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
+
 class VersionMetaProvider {
 
     private VersionJSON versionJSON;
@@ -61,20 +63,20 @@ class VersionMetaProvider {
         for (Library library : versionJSON.libraries) {
             LibDownload libDownload = library.downloads;
             if (libDownload.artifact != null) {
-                FileUtils.copyURLToFile(libDownload.artifact.url, new File(dir, libDownload.artifact.path));
+                FileUtils.copyURLToFile(libDownload.artifact.url, new File(dir, libDownload.artifact.path), TIMEOUT, TIMEOUT);
             }
             if (libDownload.classifiers != null) {
                 if (libDownload.classifiers.containsKey("javadoc")) {
                     FileUtils.copyURLToFile(libDownload.classifiers.get("javadoc").url,
-                                            new File(dir, libDownload.classifiers.get("javadoc").path));
+                                            new File(dir, libDownload.classifiers.get("javadoc").path), TIMEOUT, TIMEOUT);
                 }
                 if (libDownload.classifiers.containsKey("sources")) {
                     FileUtils.copyURLToFile(libDownload.classifiers.get("sources").url,
-                                            new File(dir, libDownload.classifiers.get("sources").path));
+                                            new File(dir, libDownload.classifiers.get("sources").path), TIMEOUT, TIMEOUT);
                 }
                 if (libDownload.classifiers.containsKey("natives-windows")) {
                     FileUtils.copyURLToFile(libDownload.classifiers.get("natives-windows").url,
-                                            new File(dir, libDownload.classifiers.get("natives-windows").path));
+                                            new File(dir, libDownload.classifiers.get("natives-windows").path), TIMEOUT, TIMEOUT);
                 }
             }
         }

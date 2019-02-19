@@ -20,22 +20,24 @@ public class MinecraftProvider {
         }
     }
 
-    public URL getVersionMetaUrl(File manifest, String versionID, String versionType) {
+    public String resolveVersionID(File manifest, String versionID, String versionType) {
 
         VersionManifestProvider provider = VersionManifestProvider.newVersionManifestProvider(manifest);
 
+        String resolved = versionID;
+
         if (versionID.equals("latest")) {
             if (versionType.equals("release")) {
-                versionID = provider.getLatestRelease();
+                resolved = provider.getLatestRelease();
             } else if (versionType.equals("snapshot")) {
-                versionID = provider.getLatestSnapshot();
+                resolved = provider.getLatestSnapshot();
             } else {
                 //todo: log invalid version type
                 System.out.println("bad version type");
                 throw new RuntimeException("bad version type");
             }
         }
-        return provider.getVersionMetaURL(versionID);
+        return resolved;
     }
 
     public URL getVersionMetaUrl(File manifest, String versionID) {
@@ -59,7 +61,7 @@ public class MinecraftProvider {
     }
 
     public void saveAssetsToDir(File dir, File version, String assetID) throws IOException {
-
+        AssetProvider.newAssetProvider(version).saveAssetsToDir(dir);
     }
 
 }

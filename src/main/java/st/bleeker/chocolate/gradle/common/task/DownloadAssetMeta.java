@@ -14,13 +14,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
+
 public class DownloadAssetMeta extends ChocolateTask {
 
     private Project project;
     private MinecraftExtension minecraftExtension;
 
-    private String versionID;
     private String assetID;
+    private String versionID;
     private File versionMeta;
     private File assetMeta;
 
@@ -31,13 +33,20 @@ public class DownloadAssetMeta extends ChocolateTask {
     }
 
     @TaskAction
-    public void downloadAssetMeta() throws IOException {
+    public void execute() throws IOException {
 
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
         setAssetID(provider.getAssetID(getVersionMeta(), getVersionID()));
         URL url = provider.getAssetsUrl(getVersionMeta(), getAssetID());
-        FileUtils.copyURLToFile(url, getAssetMeta());
+        FileUtils.copyURLToFile(url, getAssetMeta(), TIMEOUT, TIMEOUT);
 
+    }
+
+    public String getAssetID() {
+        return assetID;
+    }
+    public void setAssetID(String assetID) {
+        this.assetID = assetID;
     }
 
     @Input
@@ -46,13 +55,6 @@ public class DownloadAssetMeta extends ChocolateTask {
     }
     public void setVersionID(String versionID) {
         this.versionID = versionID;
-    }
-
-    public String getAssetID() {
-        return assetID;
-    }
-    public void setAssetID(String assetID) {
-        this.assetID = assetID;
     }
 
     @InputFile

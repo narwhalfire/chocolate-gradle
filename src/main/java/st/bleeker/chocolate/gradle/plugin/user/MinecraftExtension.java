@@ -19,6 +19,10 @@ public class MinecraftExtension {
         this.minecraftProvider = minecraftProvider;
     }
 
+    void apply() {
+
+    }
+
     public void setVersion(String version) {
         this.mcVersionID = version;
     }

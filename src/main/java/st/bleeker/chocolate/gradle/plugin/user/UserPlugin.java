@@ -7,6 +7,7 @@ import st.bleeker.chocolate.gradle.common.task.*;
 import st.bleeker.chocolate.gradle.common.util.provider.MinecraftProvider;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -63,20 +64,34 @@ public class UserPlugin implements Plugin<Project> {
 
     private void configureTasks() {
         dlVersionManifest.configure(task -> {
+            task.setVersionID(minecraftExtension.mcVersionID);
             task.setManifest(new File(task.getMinecraftCache(), "version_manifest.json"));
         });
         dlVersionMeta.configure(task -> {
+            //todo: make this only execute when needed
+            try {
+                dlVersionManifest.get().execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             task.dependsOn(dlVersionManifest.get());
-            task.setVersionID(minecraftExtension.mcVersionID);
+            task.setVersionID(dlVersionManifest.get().getVersionID());
             task.setManifest(dlVersionManifest.get().getManifest());
             task.setVersionMeta(new File(task.getMinecraftVersionCache(task.getVersionID()),
                                          task.getVersionID() + ".json"));
         });
         dlAssetMeta.configure(task -> {
+            //todo: make this only execute when needed
+            try {
+                dlVersionMeta.get().execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             task.dependsOn(dlVersionMeta.get());
+            task.setAssetID(dlVersionMeta.get().getAssetID());
             task.setVersionID(dlVersionMeta.get().getVersionID());
             task.setVersionMeta(dlVersionMeta.get().getVersionMeta());
-            task.setAssetMeta(new File(task.getMinecraftAssetCahce(),
+            task.setAssetMeta(new File(task.getMinecraftAssetIndexCache(),
                                        task.getAssetID() + ".json"));
         });
         dlmcJars.configure(task -> {
@@ -89,7 +104,10 @@ public class UserPlugin implements Plugin<Project> {
             task.addOutput("server", new File(cache, "server.jar"));
         });
         dlmcAssets.configure(task -> {
-
+            task.dependsOn(dlAssetMeta.get());
+            task.setAssetID(dlAssetMeta.get().getAssetID());
+            task.setAssetMeta(dlAssetMeta.get().getAssetMeta());
+            task.setAssetDir(task.getMinecraftAssetObjectCache());
         });
         dlLibJars.configure(task -> {
             task.dependsOn(dlVersionMeta.get());

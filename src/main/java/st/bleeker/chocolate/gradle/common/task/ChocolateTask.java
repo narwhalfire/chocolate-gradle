@@ -19,7 +19,7 @@ public abstract class ChocolateTask extends DefaultTask {
     }
 
     public File getMinecraftVersionCache(String mcVersionID) {
-        return ensureChild(getMinecraftCache(), mcVersionID);
+        return ensureChild(getMinecraftCache(), "versions" + File.separator + mcVersionID);
     }
 
     public File getMinecraftLibraryCache() {
@@ -30,11 +30,19 @@ public abstract class ChocolateTask extends DefaultTask {
         return ensureChild(getMinecraftCache(), "assets");
     }
 
+    public File getMinecraftAssetIndexCache() {
+        return ensureChild(getMinecraftAssetCahce(), "index");
+    }
+
+    public File getMinecraftAssetObjectCache() {
+        return ensureChild(getMinecraftAssetCahce(), "objects");
+    }
+
     private File ensureChild(File parent, String child) {
         File dir = new File(parent, child);
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
+//        if (!dir.exists()) {
+//            dir.mkdir();
+//        }
         return dir;
     }
 

@@ -28,7 +28,7 @@ public class DownloadLibraryJars extends ChocolateTask {
     }
 
     @TaskAction
-    public void downloadLibraryJars() throws IOException {
+    public void execute() throws IOException {
 
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
 

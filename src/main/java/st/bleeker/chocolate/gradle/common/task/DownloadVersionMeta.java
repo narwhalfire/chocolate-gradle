@@ -2,7 +2,6 @@ package st.bleeker.chocolate.gradle.common.task;
 
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.Project;
-import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
@@ -13,13 +12,20 @@ import st.bleeker.chocolate.gradle.plugin.user.MinecraftExtension;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
+
+import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
 
 public class DownloadVersionMeta extends ChocolateTask {
 
     private Project project;
     private MinecraftExtension minecraftExtension;
 
+
+    private String assetID;
     private String versionID;
     private File manifest;
     private File versionMeta;
@@ -31,12 +37,32 @@ public class DownloadVersionMeta extends ChocolateTask {
     }
 
     @TaskAction
-    public void downloadVersionMeta() throws IOException {
+    public void execute() throws IOException {
 
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
         URL url = provider.getVersionMetaUrl(getManifest(), getVersionID());
-        FileUtils.copyURLToFile(url, getVersionMeta());
 
+        InputStream inputStream = url.openStream();
+        OutputStream outputStream = Files.newOutputStream(getVersionMeta().toPath());
+
+//        int b;
+//        while ((b = inputStream.read()) != -1) {
+//            outputStream.write(b);
+//        }
+//        inputStream.close();
+//        outputStream.close();
+
+
+        FileUtils.copyURLToFile(url, getVersionMeta(), TIMEOUT, TIMEOUT);
+        setAssetID(provider.getAssetID(getVersionMeta(), getVersionID()));
+
+    }
+
+    public String getAssetID() {
+        return assetID;
+    }
+    public void setAssetID(String assetID) {
+        this.assetID = assetID;
     }
 
     @Input

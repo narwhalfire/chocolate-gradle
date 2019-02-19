@@ -16,6 +16,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
+import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
+
 public class DownloadMinecraftJars extends ChocolateTask {
 
     private Project project;
@@ -32,13 +34,13 @@ public class DownloadMinecraftJars extends ChocolateTask {
     }
 
     @TaskAction
-    public void downloadMinecraftJars() throws IOException {
+    public void execute() throws IOException {
 
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
 
         for (Map.Entry<String, File> entry : jarMap.entrySet()) {
             URL url = provider.getJarUrl(getVersionMeta(), getVersionID(), entry.getKey());
-            FileUtils.copyURLToFile(url, entry.getValue());
+            FileUtils.copyURLToFile(url, entry.getValue(), TIMEOUT, TIMEOUT);
         }
 
     }
