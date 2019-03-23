@@ -9,6 +9,7 @@ public class MinecraftExtension {
 
     public String mcVersionID = "latest";
     public String mcVersionType = "release";
+    private String mcVersionResID = null;
 
     private Project project;
     private MinecraftProvider minecraftProvider;
@@ -25,6 +26,14 @@ public class MinecraftExtension {
 
     public void setVersion(String version) {
         this.mcVersionID = version;
+    }
+
+    void setMcVersionResID(String version) {
+        this.mcVersionResID = version;
+    }
+
+    public String getVersion() {
+        return mcVersionResID;
     }
 
     public MinecraftProvider getMinecraftProvider() {

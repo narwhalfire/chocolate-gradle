@@ -21,7 +21,7 @@ public class DownloadMinecraftAssets extends ChocolateTask {
     }
 
     @TaskAction
-    public void execute() throws IOException {
+    public void task() throws IOException {
 
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
         provider.saveAssetsToDir(getAssetDir(), getAssetMeta(), getAssetID());

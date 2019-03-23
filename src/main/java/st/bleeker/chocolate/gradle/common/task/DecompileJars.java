@@ -1,25 +1,17 @@
 package st.bleeker.chocolate.gradle.common.task;
 
 import org.gradle.api.Project;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.JavaExec;
-import org.gradle.api.tasks.TaskAction;
-import org.gradle.internal.impldep.org.mozilla.javascript.Decompiler;
-import org.jetbrains.java.decompiler.main.decompiler.BaseDecompiler;
-import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
-import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
-import org.jetbrains.java.decompiler.main.extern.IFernflowerLogger;
+import org.gradle.api.tasks.*;
+import st.bleeker.chocolate.gradle.common.util.CacheUtils;
 import st.bleeker.chocolate.gradle.common.util.provider.MinecraftProvider;
 import st.bleeker.chocolate.gradle.plugin.user.MinecraftExtension;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DecompileJars extends ChocolateTask {
@@ -27,6 +19,8 @@ public class DecompileJars extends ChocolateTask {
     private String versionID;
     private File versionMeta;
     private File libraryDir;
+    private File decompDir;
+    private Map<String, File> jars;
 
     @Inject
     public DecompileJars(Project project, MinecraftExtension minecraftExtension) {
@@ -34,21 +28,53 @@ public class DecompileJars extends ChocolateTask {
     }
 
     @TaskAction
-    public void execute() {
+    public void task() throws IOException {
 
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
         List<Path> paths = provider.listLibraries(getVersionMeta(), getVersionID());
-//        List<String> libArgs = paths.stream().map(path -> {
-//            Path p = getLibraryDir().toPath().resolve(path);
-//            return "-e=\"" + p.toString() + "\"";
-//        }).collect(Collectors.toList());
-//
-//        List<String> args = new LinkedList<>();
+        String javaexec = Paths.get(
+                System.getProperty("java.home"),
+                "bin", "java.exe").toAbsolutePath().toString();
+        String cfrjar = new File(org.benf.cfr.reader.Main.class
+                                         .getProtectionDomain().getCodeSource().getLocation()
+                                         .getFile()).getAbsolutePath();
+        List<String> extracp = paths.stream()
+                                    .map(path -> getLibraryDir().toPath().resolve(path).toString())
+                                    .collect(Collectors.toList());
+        List<Process> decompProcs = new ArrayList<>();
+        for (Map.Entry<String, File> entry : jars.entrySet()) {
+            String source = entry.getValue().getAbsolutePath();
+            String output = new File(getDecompiledDir(), entry.getKey()).getAbsolutePath();
+            new File(output).mkdirs();
+            List<String> args = new LinkedList<>();
+            args.add(javaexec);
+            args.add("-jar");
+            args.add(cfrjar);
+            args.add(source);
+            extracp.forEach(lib -> {
+                args.add("--extraclasspath");
+                args.add(lib);
+            });
+            args.add("--outputdir");
+            args.add(output);
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            processBuilder.command(args);
+            processBuilder.redirectError(ProcessBuilder.Redirect.to(Paths.get(output, "outerr.txt").toFile()));
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.to(Paths.get(output, "out.txt").toFile()));
+            Process process = processBuilder.start();
+            Runtime.getRuntime().addShutdownHook(new Thread(process::destroy));
+            decompProcs.add(process);
+        }
 
-        Decompiler decompiler = new Decompiler(new File("E:/a"), new HashMap<>(), new PrintStreamLogger(System.out));
-        decompiler.addSource(new File(getMinecraftVersionCache(getVersionID()), "server.jar"));
-        paths.stream().map(path -> new File(getLibraryDir(), path.toString())).forEach(decompiler::addLibrary);
-        decompiler.decompileContext();
+        for (Process process : decompProcs) {
+
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
 
 
     }
@@ -69,18 +95,33 @@ public class DecompileJars extends ChocolateTask {
         this.versionMeta = versionMeta;
     }
 
+    @InputFiles
+    public Collection<File> getJars() {
+        return jars.values();
+    }
+    public void setJars(Map<String, File> jarMap) {
+        this.jars = jarMap;
+    }
+    public void addJar(String k, File v) {
+        this.jars.put(k, v);
+    }
+    public void removeJar(String k) {
+        this.jars.remove(k);
+    }
+
+    @OutputDirectory
+    public File getDecompiledDir() {
+        return decompDir;
+    }
+    public void setDecompiledDir(File decompDir) {
+        this.decompDir = decompDir;
+    }
+
     public File getLibraryDir() {
         return libraryDir;
     }
     public void setLibraryDir(File libraryDir) {
         this.libraryDir = libraryDir;
-    }
-
-    class Decompiler extends ConsoleDecompiler {
-
-        protected Decompiler(File destination, Map<String, Object> options, IFernflowerLogger logger) {
-            super(destination, options, logger);
-        }
     }
 
 }

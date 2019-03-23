@@ -30,10 +30,9 @@ public class DownloadMinecraftJars extends ChocolateTask {
     }
 
     @TaskAction
-    public void execute() throws IOException {
+    public void task() throws IOException {
 
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
-
         for (Map.Entry<String, File> entry : jarMap.entrySet()) {
             URL url = provider.getJarUrl(getVersionMeta(), getVersionID(), entry.getKey());
             FileUtils.copyURLToFile(url, entry.getValue(), TIMEOUT, TIMEOUT);
