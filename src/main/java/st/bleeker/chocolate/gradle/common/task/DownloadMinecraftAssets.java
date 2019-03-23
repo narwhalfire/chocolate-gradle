@@ -9,6 +9,9 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Downloads the asset objects.
+ */
 public class DownloadMinecraftAssets extends ChocolateTask {
 
     private String assetID;

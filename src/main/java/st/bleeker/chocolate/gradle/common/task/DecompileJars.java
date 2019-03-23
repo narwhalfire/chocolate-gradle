@@ -14,6 +14,10 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This task decompiles the assigned jars using the cfr decompiler. The decompiled classes are dumped to
+ * the output directory and are not packed into jars.
+ */
 public class DecompileJars extends ChocolateTask {
 
     private String versionID;
@@ -70,6 +74,7 @@ public class DecompileJars extends ChocolateTask {
 
             try {
                 process.waitFor();
+                //todo: process are waited on by default, should make that a config option
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

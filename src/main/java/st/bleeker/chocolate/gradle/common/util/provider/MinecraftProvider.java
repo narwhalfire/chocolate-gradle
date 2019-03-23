@@ -7,6 +7,10 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * This class provides various minecraft versioning data and resources. Currently just a proxy for the other
+ * more specific providers.
+ */
 public class MinecraftProvider {
 
     private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
@@ -22,6 +26,14 @@ public class MinecraftProvider {
         }
     }
 
+    /**
+     * Looks up the id to make sure it actually exists in the manifest. If latest is specified, it is resolved
+     * to the latest version based on the specified version type (release/snapshot).
+     * @param manifest downloaded manifest file
+     * @param versionID (1.12, 1.13-pre6, snapshot id)
+     * @param versionType "release" or "snapshot"
+     * @return resolved version id
+     */
     public String resolveVersionID(File manifest, String versionID, String versionType) {
 
         VersionManifestProvider provider = VersionManifestProvider.newVersionManifestProvider(manifest);

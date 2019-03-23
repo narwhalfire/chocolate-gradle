@@ -18,6 +18,9 @@ import java.util.Map;
 
 import static st.bleeker.chocolate.gradle.common.util.Constants.TIMEOUT;
 
+/**
+ * Downloads the server and client jars.
+ */
 public class DownloadMinecraftJars extends ChocolateTask {
 
     private String versionID;

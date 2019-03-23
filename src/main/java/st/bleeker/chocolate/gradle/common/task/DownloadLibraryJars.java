@@ -12,6 +12,9 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Downloads the libraries that minecraft depends on.
+ */
 public class DownloadLibraryJars extends ChocolateTask {
 
     private String versionID;
