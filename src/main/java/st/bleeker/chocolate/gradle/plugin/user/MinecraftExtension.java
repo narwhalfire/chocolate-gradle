@@ -9,6 +9,7 @@ public class MinecraftExtension {
 
     public String mcVersionID = "latest";
     public String mcVersionType = "release";
+    public String decompiler = "ff";
     private String mcVersionResID = null;
 
     private Project project;

@@ -34,6 +34,8 @@ public class DecompileJars extends ChocolateTask {
     @TaskAction
     public void task() throws IOException {
 
+        String decompiler = minecraftExtension.decompiler;
+
         MinecraftProvider provider = minecraftExtension.getMinecraftProvider();
         List<Path> paths = provider.listLibraries(getVersionMeta(), getVersionID());
         String javaexec = Paths.get(
@@ -42,6 +44,9 @@ public class DecompileJars extends ChocolateTask {
         String cfrjar = new File(org.benf.cfr.reader.Main.class
                                          .getProtectionDomain().getCodeSource().getLocation()
                                          .getFile()).getAbsolutePath();
+        String ffjar = new File(org.jetbrains.java.decompiler.main.Fernflower.class
+                                        .getProtectionDomain().getCodeSource().getLocation()
+                                        .getFile()).getAbsolutePath();
         List<String> extracp = paths.stream()
                                     .map(path -> getLibraryDir().toPath().resolve(path).toString())
                                     .collect(Collectors.toList());
@@ -53,14 +58,26 @@ public class DecompileJars extends ChocolateTask {
             List<String> args = new LinkedList<>();
             args.add(javaexec);
             args.add("-jar");
-            args.add(cfrjar);
-            args.add(source);
-            extracp.forEach(lib -> {
-                args.add("--extraclasspath");
-                args.add(lib);
-            });
-            args.add("--outputdir");
-            args.add(output);
+
+            if (decompiler.equals("ff")) {
+
+                args.add(ffjar);
+                args.add(source);
+                args.add(output);
+
+            } else if (decompiler.equals("cfr")) {
+
+                args.add(cfrjar);
+                args.add(source);
+                extracp.forEach(lib -> {
+                    args.add("--extraclasspath");
+                    args.add(lib);
+                });
+                args.add("--outputdir");
+                args.add(output);
+
+            }
+
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.command(args);
             processBuilder.redirectError(ProcessBuilder.Redirect.to(Paths.get(output, "outerr.txt").toFile()));

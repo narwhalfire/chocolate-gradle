@@ -1,6 +1,5 @@
 package st.bleeker.chocolate.gradle.plugin.user;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskProvider;
@@ -119,7 +118,8 @@ public class UserPlugin implements Plugin<Project> {
                 task.dependsOn(dlLibJars);
                 task.setVersionID(versionID);
                 task.setVersionMeta(versionMeta);
-                task.setDecompiledDir(new File(CacheUtils.getMinecraftVersionCache(project, versionID), "decomp"));
+                task.setDecompiledDir(new File(CacheUtils.getMinecraftVersionCache(project, versionID),
+                                               "decomp" + "-" + extension.decompiler));
                 task.setLibraryDir(CacheUtils.getMinecraftLibraryCache(project));
                 File cache = CacheUtils.getMinecraftVersionCache(project, versionID);
                 task.setJars(new HashMap<>());
