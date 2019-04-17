@@ -28,6 +28,14 @@ repositories {
         name = 'jitpack'
         url = 'https://jitpack.io'
     }
+    maven {
+        name = 'forge'
+        url = 'https://files.minecraftforge.net/maven'
+    }
+    maven {
+        name = 'Fabric'
+        url = 'http://maven.modmuss50.me/'
+    }
 }
 
 dependencies {
@@ -35,6 +43,9 @@ dependencies {
     implementation 'com.github.fesh0r:fernflower:master'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'commons-io:commons-io:2.4'
+
+    implementation 'net.minecraftforge:mergetool:1.0.3'
+    implementation 'net.fabricmc:stitch:0.1.2.48'
 
 }
 

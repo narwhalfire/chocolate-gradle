@@ -3,10 +3,7 @@ package st.bleeker.chocolate.gradle.plugin.user;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskProvider;
-import st.bleeker.chocolate.gradle.common.task.DecompileJars;
-import st.bleeker.chocolate.gradle.common.task.DownloadLibraryJars;
-import st.bleeker.chocolate.gradle.common.task.DownloadMinecraftAssets;
-import st.bleeker.chocolate.gradle.common.task.DownloadMinecraftJars;
+import st.bleeker.chocolate.gradle.common.task.*;
 import st.bleeker.chocolate.gradle.common.util.CacheUtils;
 import st.bleeker.chocolate.gradle.common.util.Constants;
 import st.bleeker.chocolate.gradle.common.util.provider.MinecraftProvider;
@@ -27,6 +24,7 @@ public class UserPlugin implements Plugin<Project> {
     private TaskProvider<DownloadMinecraftAssets>       dlmcAssets;
     private TaskProvider<DownloadLibraryJars>           dlLibJars;
     private TaskProvider<DecompileJars>                 decompJars;
+    private TaskProvider<MergeJars>                     mergeJars;
 
     @Override
     public void apply(Project target) {
@@ -60,6 +58,9 @@ public class UserPlugin implements Plugin<Project> {
                                                              this.project, minecraftExtension);
         decompJars =        this.project.getTasks().register("decompJars",
                                                              DecompileJars.class,
+                                                             this.project, minecraftExtension);
+        mergeJars =         this.project.getTasks().register("mergeJars",
+                                                             MergeJars.class,
                                                              this.project, minecraftExtension);
     }
 
@@ -125,6 +126,13 @@ public class UserPlugin implements Plugin<Project> {
                 task.setJars(new HashMap<>());
                 task.addJar("client", new File(cache, "client.jar"));
                 task.addJar("server", new File(cache, "server.jar"));
+            });
+            mergeJars.configure(task -> {
+                task.dependsOn(dlmcJars);
+                task.dependsOn(dlLibJars);
+                task.setClientJar(new File(CacheUtils.getMinecraftVersionCache(project, versionID),"client.jar"));
+                task.setServerJar(new File(CacheUtils.getMinecraftVersionCache(project, versionID),"server.jar"));
+                task.setMergedJar(new File(CacheUtils.getMinecraftVersionCache(project, versionID),"merged.jar"));
             });
         });
 
